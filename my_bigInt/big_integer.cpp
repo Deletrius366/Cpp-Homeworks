@@ -7,7 +7,7 @@
 #include <cstdlib>
 #include <stdexcept>
 #include <iostream>
-#include "bigint.h"
+#include "big_integer.h"
 
 using namespace std;
 
