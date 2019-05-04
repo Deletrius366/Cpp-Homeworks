@@ -7,7 +7,7 @@
 #include <cstdlib>
 #include <stdexcept>
 #include <iostream>
-#include "big_integer.h"
+#include "bigint.h"
 
 using namespace std;
 
@@ -23,11 +23,11 @@ big_integer::big_integer(big_integer const &other) {
 
 big_integer::big_integer(int a) {
     sign = a != 0 ? (a > 0 ? 1 : -1) : 0;
-    digits.push_back(abs(a));
+    digits.push_back(static_cast<uint32_t>(abs(1LL * a)));
 }
 
 big_integer::big_integer(std::string const &str) {
-    for (int i = (str[0] == '-'); i < str.size(); i++) {
+    for (ptrdiff_t i = static_cast<size_t>(str[0] == '-'); i < str.size(); i++) {
         *this = *this * 10 + (str[i] - '0');
     }
     sign = (str[0] == '-' ? -1 : 1);
@@ -48,31 +48,31 @@ void big_integer::add_with_shift(const big_integer &a, int shift) {
         return;
     }
     if (this->digits.size() >= a.digits.size() + shift) {
-        for (int i = 0; i < a.digits.size(); i++) {
+        for (ptrdiff_t i = 0; i < a.digits.size(); i++) {
             uint64_t res = (uint64_t) a.digits[i] + this->digits[i + shift] + tmp;
             this->digits[shift + i] = (uint32_t) res;
             tmp = static_cast<uint64_t>(res > big_integer::max_digit);
         }
 
-        for (size_t i = a.digits.size(); i < this->digits.size() - shift; i++) {
+        for (ptrdiff_t i = a.digits.size(); i < this->digits.size() - shift; i++) {
             uint64_t res = this->digits[i] + tmp;
             this->digits[shift + i] = (uint32_t) res;
             tmp = static_cast<uint64_t>(res > big_integer::max_digit);
         }
     } else if (shift >= this->digits.size()) {
-        for (int i = this->digits.size(); i < shift; i++) {
+        for (ptrdiff_t i = this->digits.size(); i < shift; i++) {
             this->digits.push_back(0);
         }
         for (unsigned int digit : a.digits) {
             this->digits.push_back(digit);
         }
     } else {
-        for (int i = shift; i < this->digits.size(); i++) {
+        for (ptrdiff_t i = static_cast<size_t>(shift); i < this->digits.size(); i++) {
             uint64_t res = uint64_t(a.digits[i - shift]) + this->digits[i] + tmp;
             tmp = static_cast<uint64_t>(res > big_integer::max_digit);
             this->digits[i] = static_cast<uint32_t>(res);
         }
-        for (int i = this->digits.size(); i < a.digits.size() + shift; i++) {
+        for (ptrdiff_t i = this->digits.size(); i < a.digits.size() + shift; i++) {
             uint64_t res = a.digits[i - shift] + tmp;
             tmp = static_cast<uint64_t>(res > big_integer::max_digit);
             this->digits.push_back(static_cast<uint32_t>(res));
@@ -135,7 +135,7 @@ big_integer operator-(big_integer a, big_integer const &b) {
     big_integer res;
     res.digits.pop_back();
     int carry = 0;
-    for (int i = 0; i < less->digits.size(); i++) {
+    for (ptrdiff_t i = 0; i < less->digits.size(); i++) {
         if (less->digits[i] <= more->digits[i] - carry) {
             res.digits.push_back(more->digits[i] - carry - less->digits[i]);
             carry = 0;
@@ -146,7 +146,7 @@ big_integer operator-(big_integer a, big_integer const &b) {
         }
     }
 
-    for (int i = less->digits.size(); i < more->digits.size(); i++) {
+    for (ptrdiff_t i = less->digits.size(); i < more->digits.size(); i++) {
         res.digits.push_back(more->digits[i] - carry);
         carry = 0;
     }
@@ -176,7 +176,7 @@ big_integer operator*(big_integer a, big_integer const &b) {
     }
 
     big_integer res;
-    for (int i = 0; i < b.digits.size(); i++) {
+    for (ptrdiff_t i = 0; i < b.digits.size(); i++) {
         res.add_with_shift(a.mul_short(b.digits[i]), i);
     }
     res.sign = a.sign * b.sign;
@@ -192,7 +192,7 @@ std::pair<big_integer, uint32_t> big_integer::div_short(uint32_t b) const {
     result.digits.pop_back();
 
     result.digits.resize(digits.size());
-    for (int i = int(digits.size()) - 1; i >= 0; i--) {
+    for (ptrdiff_t i = digits.size() - 1; i >= 0; i--) {
         uint64_t cur = digits[i] + carry * (big_integer::max_digit + 1);
         result.digits[i] = uint32_t(cur / b);
         carry = cur % b;
@@ -225,7 +225,7 @@ big_integer operator/(big_integer a, big_integer const &b) {
         return a.div_short(b.digits[0]).first;
     }
     int size = sizeof(unsigned int) * 8;
-    uint32_t normalizer = static_cast<uint32_t>((1LL << size) / ((uint64_t) (b.digits.back() + 1)));
+    auto normalizer = static_cast<uint32_t>((1LL << size) / ((uint64_t) (b.digits.back() + 1)));
     big_integer dividend = a.mul_short(normalizer);
     big_integer divisor = b.mul_short(normalizer);
 
@@ -237,7 +237,7 @@ big_integer operator/(big_integer a, big_integer const &b) {
     mod = dividend.shr_32(n-m+1);
     dividend = tmp;
     uint64_t top = divisor.digits.back();
-    for (size_t index = 0; index <= n - m; index++) {
+    for (ptrdiff_t index = 0; index <= n - m; index++) {
         size_t idx = n - m - index;
         mod = mod.shl_32(1);
         mod.digits[0] = dividend.digits[idx];
@@ -302,7 +302,7 @@ bool operator<(big_integer const &a, big_integer const &b) {
     if (a.digits.size() != b.digits.size()) {
         return (a.digits.size() < b.digits.size()) ^ (a.sign == -1);
     }
-    for (int i = a.digits.size() - 1; i >= 0; i--) {
+    for (ptrdiff_t i = a.digits.size() - 1; i >= 0; i--) {
         if (a.digits[i] < b.digits[i]) {
             return true;
         }
@@ -358,7 +358,7 @@ big_integer big_integer::from_bitwise() const {
         return *this;
     } else {
         big_integer res = (*this);
-        for (size_t i = 0; i < digits.size(); i++) {
+        for (ptrdiff_t i = 0; i < digits.size(); i++) {
             res.digits[i] = ~digits[i];
         }
         res.sign = -1;
@@ -399,7 +399,7 @@ big_integer operator^(big_integer a, big_integer const &b) {
 }
 
 big_integer big_integer::operator~() const {
-   return -*this-1;
+    return -*this-1;
 }
 
 big_integer &big_integer::operator&=(big_integer const &rhs) {
@@ -419,10 +419,10 @@ big_integer &big_integer::shl_32(size_t shift) {
     size_t old_size = digits.size();
     digits.resize(old_size + shift, 0);
 
-    for (int i = old_size - 1; i >= 0; i--) {
+    for (ptrdiff_t i = old_size - 1; i >= 0; i--) {
         digits[i + shift] = digits[i];
     }
-    for (int i = shift - 1; i >= 0; i--) {
+    for (ptrdiff_t i = shift - 1; i >= 0; i--) {
         digits[i] = 0;
     }
     return (*this);
@@ -430,7 +430,7 @@ big_integer &big_integer::shl_32(size_t shift) {
 
 big_integer operator<<(big_integer a, int shift) {
     big_integer res(a);
-    res.shl_32(shift / 32);
+    res.shl_32(static_cast<size_t>(shift / 32));
     shift %= 32;
     uint32_t carry = 0;
     uint32_t next_carry = 0;
@@ -453,7 +453,7 @@ big_integer &big_integer::operator<<=(int rhs) {
 }
 
 big_integer &big_integer::shr_32(size_t shift) {
-    for (int i = shift; i < digits.size(); i++) {
+    for (ptrdiff_t i = shift; i < digits.size(); i++) {
         digits[i - shift] = digits[i];
     }
     digits.resize(digits.size() - shift);
@@ -462,13 +462,13 @@ big_integer &big_integer::shr_32(size_t shift) {
 
 big_integer operator>>(big_integer a, int shift) {
     big_integer res(a);
-    res.shr_32(shift / 32);
+    res.shr_32(static_cast<size_t>(shift / 32));
     shift %= 32;
     uint32_t carry = 0;
     uint32_t next_carry = 0;
     res.sign = -1;
 
-    for (int i = res.digits.size() - 1; i >= 0; i--) {
+    for (ptrdiff_t i = res.digits.size() - 1; i >= 0; i--) {
         next_carry = (res.digits[i] << (32 - shift));
         res.digits[i] = static_cast<uint32_t >((res.digits[i] >> shift) + carry);
         carry = next_carry;
