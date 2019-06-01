@@ -18,9 +18,7 @@ big_integer::big_integer(big_integer const &other) {
     sign = other.sign;
 }
 
-big_integer::big_integer(shared_vector digits, int sign) : digits(digits), sign(sign) {
-
-}
+big_integer::big_integer(shared_vector digits, int sign) : digits(digits), sign(sign) {}
 
 big_integer::big_integer(int a) {
     sign = a != 0 ? (a > 0 ? 1 : -1) : 0;
@@ -29,20 +27,13 @@ big_integer::big_integer(int a) {
 
 big_integer::big_integer(std::string const &str) {
     for (ptrdiff_t i = static_cast<size_t>(str[0] == '-'); i < str.size(); i++) {
-        if (i == 58) {
-            int rofl = 0;
-        }
         *this = *this * 10 + (str[i] - '0');
     }
     sign = (str[0] == '-' ? -1 : 1);
     norm();
 }
 
-big_integer &big_integer::operator=(big_integer const &other) {
-    digits = other.digits;
-    sign = other.sign;
-    return *this;
-}
+big_integer &big_integer::operator=(big_integer const &other) = default;
 
 big_integer::~big_integer() = default;
 
@@ -564,12 +555,4 @@ std::string to_string(big_integer const &a) {
 std::ostream &operator<<(std::ostream &s, big_integer const &a) {
     s << to_string(a);
     return s;
-}
-
-void big_integer::swap(big_integer &b) {
-    big_integer temp(*this);
-    sign = b.sign;
-    digits = b.digits;
-    b.sign = temp.sign;
-    b.digits = temp.digits;
 }

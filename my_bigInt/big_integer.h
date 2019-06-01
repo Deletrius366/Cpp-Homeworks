@@ -102,7 +102,6 @@ private:
     uint32_t get_bitwise_ind(uint32_t ind) const;
     big_integer to_bitwise() const;
     big_integer from_bitwise() const;
-    void swap(big_integer &a);
 
     template <class FunctorT>
     friend big_integer doOps(big_integer a, big_integer const& b, FunctorT f);
