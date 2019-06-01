@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <iosfwd>
 #include <cstdint>
+#include "shared_vector.h"
 
 struct big_integer {
 
@@ -14,6 +15,8 @@ public:
     big_integer(big_integer const &other);
 
     big_integer(int a);
+
+    big_integer(shared_vector digits, int sign);
 
     explicit big_integer(std::string const &str);
 
@@ -84,7 +87,7 @@ public:
     friend std::string to_string(big_integer const &a);
 
 private:
-    std::vector<uint32_t> digits;
+    shared_vector digits;
     int sign;
 
     static const uint64_t max_digit = UINT32_MAX;
@@ -99,6 +102,7 @@ private:
     uint32_t get_bitwise_ind(uint32_t ind) const;
     big_integer to_bitwise() const;
     big_integer from_bitwise() const;
+    void swap(big_integer &a);
 
     template <class FunctorT>
     friend big_integer doOps(big_integer a, big_integer const& b, FunctorT f);

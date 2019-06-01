@@ -1,4 +1,3 @@
-
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
@@ -11,14 +10,16 @@
 
 using namespace std;
 
-big_integer::big_integer() {
-    digits = {0};
-    sign = 0;
+big_integer::big_integer(): sign(0), digits(1) {
 }
 
 big_integer::big_integer(big_integer const &other) {
     digits = other.digits;
     sign = other.sign;
+}
+
+big_integer::big_integer(shared_vector digits, int sign) : digits(digits), sign(sign) {
+
 }
 
 big_integer::big_integer(int a) {
@@ -28,6 +29,9 @@ big_integer::big_integer(int a) {
 
 big_integer::big_integer(std::string const &str) {
     for (ptrdiff_t i = static_cast<size_t>(str[0] == '-'); i < str.size(); i++) {
+        if (i == 58) {
+            int rofl = 0;
+        }
         *this = *this * 10 + (str[i] - '0');
     }
     sign = (str[0] == '-' ? -1 : 1);
@@ -63,7 +67,8 @@ void big_integer::add_with_shift(const big_integer &a, int shift) {
         for (ptrdiff_t i = this->digits.size(); i < shift; i++) {
             this->digits.push_back(0);
         }
-        for (unsigned int digit : a.digits) {
+        for (ptrdiff_t i = 0; i < a.digits.size(); i++) {
+            uint32_t digit = a.digits[i];
             this->digits.push_back(digit);
         }
     } else {
@@ -92,7 +97,8 @@ big_integer big_integer::mul_short(uint32_t a) const {
     big_integer ans;
     ans.digits.pop_back();
     uint32_t carry = 0;
-    for (unsigned int digit : digits) {
+    for (int i = 0; i < digits.size(); i++) {
+        uint32_t digit = digits[i];
         uint64_t res = uint64_t(digit) * a + carry;
         carry = static_cast<uint32_t>(res / (big_integer::max_digit + 1));
         ans.digits.push_back(static_cast<uint32_t>(res));
@@ -188,16 +194,19 @@ std::pair<big_integer, uint32_t> big_integer::div_short(uint32_t b) const {
         throw std::runtime_error("Divide by zero");
     uint32_t ost;
     uint64_t carry = 0;
-    big_integer result;
-    result.digits.pop_back();
+    //big_integer result;
+    vector<uint32_t> new_digits;
+    new_digits.resize(digits.size());
+    //result.digits.pop_back();
 
-    result.digits.resize(digits.size());
+    //new_digits.resize(digits.size());
     for (ptrdiff_t i = digits.size() - 1; i >= 0; i--) {
         uint64_t cur = digits[i] + carry * (big_integer::max_digit + 1);
-        result.digits[i] = uint32_t(cur / b);
+        new_digits[i] = uint32_t(cur / b);
         carry = cur % b;
     }
     ost = uint32_t(carry);
+    big_integer result = big_integer(shared_vector(new_digits), 0);
     result.sign = sign * (b > 0 ? 1 : -1);
     result.norm();
     return std::pair<big_integer, uint32_t>(result, ost);
@@ -230,6 +239,7 @@ big_integer operator/(big_integer a, big_integer const &b) {
     big_integer divisor = b.mul_short(normalizer);
 
     big_integer res = 0; res.digits.pop_back();
+    vector<uint32_t> res_digits;
     size_t n = dividend.digits.size();
     size_t m = divisor.digits.size();
     big_integer mod;
@@ -257,10 +267,11 @@ big_integer operator/(big_integer a, big_integer const &b) {
             guess--;
             res_guess -= divisor;
         }
-        res.digits.push_back(static_cast<uint32_t>(guess));
+        res_digits.push_back(static_cast<uint32_t>(guess));
         mod -= res_guess;
     }
-    std::reverse(res.digits.begin(), res.digits.end());
+    std::reverse(res_digits.begin(), res_digits.end());
+    res.digits = shared_vector(res_digits);
     res.sign = a.sign * b.sign;
     res.norm();
     return res;
@@ -278,10 +289,8 @@ bool operator==(big_integer const &a, big_integer const &b) {
     if (a.sign != b.sign || a.digits.size() != b.digits.size()) {
         return false;
     }
-
-    for (auto it_a = a.digits.begin(), it_b = b.digits.begin();
-         it_a != a.digits.end() && it_b != b.digits.end(); ++it_a, ++it_b) {
-        if (*it_a != *it_b) {
+    for (int i = 0; i < a.digits.size(); i++) {
+        if (a.digits[i] != b.digits[i]) {
             return false;
         }
     }
@@ -370,15 +379,17 @@ big_integer big_integer::from_bitwise() const {
 template <class FunctorT>
 big_integer doOps(big_integer a, big_integer const &b,FunctorT f) {
     big_integer res; res.digits.pop_back();
-    res.digits.resize(std::max(a.digits.size(), b.digits.size()));
+    vector <uint32_t> new_digits;
+    new_digits.resize(std::max(a.digits.size(), b.digits.size()));
+    //res.digits.resize(std::max(a.digits.size(), b.digits.size()));
     big_integer first = a.to_bitwise();
     first.sign = a.sign;
     big_integer second = b.to_bitwise();
     second.sign = b.sign;
-    for (uint32_t i = 0; i < res.digits.size(); i++) {
-        res.digits[i] = f(first.get_bitwise_ind(i), second.get_bitwise_ind(i));
+    for (uint32_t i = 0; i < new_digits.size(); i++) {
+        new_digits[i] = f(first.get_bitwise_ind(i), second.get_bitwise_ind(i));
     }
-
+    res = big_integer(shared_vector(new_digits), 0);
     res.sign = (f(first.sign == -1, second.sign == -1)) == 1 ? -1 : 1;
     res = res.from_bitwise();
     res.norm();
@@ -417,14 +428,20 @@ big_integer &big_integer::operator^=(big_integer const &rhs) {
 
 big_integer &big_integer::shl_32(size_t shift) {
     size_t old_size = digits.size();
-    digits.resize(old_size + shift, 0);
+    vector <uint32_t > new_digits;
+    new_digits.resize(old_size + shift, 0);
+    for (int i = 0; i < old_size; i++) {
+        new_digits[i] = digits[i];
+    }
+    //digits.resize(old_size + shift, 0);
 
     for (ptrdiff_t i = old_size - 1; i >= 0; i--) {
-        digits[i + shift] = digits[i];
+        new_digits[i + shift] = new_digits[i];
     }
     for (ptrdiff_t i = shift - 1; i >= 0; i--) {
-        digits[i] = 0;
+        new_digits[i] = 0;
     }
+    digits = shared_vector(new_digits);
     return (*this);
 }
 
@@ -435,9 +452,10 @@ big_integer operator<<(big_integer a, int shift) {
     uint32_t carry = 0;
     uint32_t next_carry = 0;
 
-    for (uint32_t &i : res.digits) {
+    for (ptrdiff_t ind = 0; ind < res.digits.size(); ind++) {
+        uint32_t i = res.digits[ind];
         next_carry = (i >> (32 - shift));
-        i = static_cast<uint32_t >((i << shift) + carry);
+        res.digits[ind] = static_cast<uint32_t >((i << shift) + carry);
         carry = next_carry;
     }
 
@@ -453,10 +471,17 @@ big_integer &big_integer::operator<<=(int rhs) {
 }
 
 big_integer &big_integer::shr_32(size_t shift) {
-    for (ptrdiff_t i = shift; i < digits.size(); i++) {
-        digits[i - shift] = digits[i];
+    vector <uint32_t > new_digits;
+    new_digits.resize(digits.size(), 0);
+    for (int i = 0; i < digits.size(); i++) {
+        new_digits[i] = digits[i];
     }
-    digits.resize(digits.size() - shift);
+    for (ptrdiff_t i = shift; i < digits.size(); i++) {
+        new_digits[i - shift] = new_digits[i];
+    }
+    new_digits.resize(digits.size() - shift);
+    digits = shared_vector(new_digits);
+    //digits.resize(digits.size() - shift);
     return (*this);
 }
 
@@ -539,4 +564,12 @@ std::string to_string(big_integer const &a) {
 std::ostream &operator<<(std::ostream &s, big_integer const &a) {
     s << to_string(a);
     return s;
+}
+
+void big_integer::swap(big_integer &b) {
+    big_integer temp(*this);
+    sign = b.sign;
+    digits = b.digits;
+    b.sign = temp.sign;
+    b.digits = temp.digits;
 }
