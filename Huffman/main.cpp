@@ -27,22 +27,23 @@ int main(int argc, char **argv) {
         } else {
             error = true;
         }
-        HuffmanArchiver HuffArch(infile, outfile);
         if (!strcmp(argv[1], "-a")) {
             try {
+                HuffmanArchiver HuffArch(infile, outfile);
                 HuffArch.archiving();
+                HuffArch.get_stat();
             } catch (HuffException &e) {
                 std::cout << e.get() << std::endl;
             }
-            HuffArch.get_stat();
         }
         if (!strcmp(argv[1], "-u")) {
             try {
+                HuffmanArchiver HuffArch(infile, outfile);
                 HuffArch.unzipping();
+                HuffArch.get_stat();
             } catch (HuffException &e) {
                 std::cout << e.get() << std::endl;
             }
-            HuffArch.get_stat();
         }
 
         if ((strcmp(argv[1], "-a") != 0) && (strcmp(argv[1], "-u") != 0)) {

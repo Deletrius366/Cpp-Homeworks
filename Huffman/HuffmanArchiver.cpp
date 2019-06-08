@@ -1,15 +1,11 @@
 #include "HuffmanArchiver.h"
-
 const int bit_in_byte = 8;
 
-HuffmanArchiver::HuffmanArchiver(const char *infile_, const char *outfile_) {
-    infile = infile_;
-    outfile = outfile_;
-}
+HuffmanArchiver::HuffmanArchiver(const char *infile_, const char *outfile_) : reader(infile_), writer(outfile_) {};
 
-HuffmanArchiver::HuffmanArchiver(std::map<char, int> &map_) {
-    map = map_;
-}
+//HuffmanArchiver::HuffmanArchiver(std::map<char, int> &map_) {
+//    map = map_;
+//}
 
 void set_bit(char &byte, int i, int j) {
     byte = byte | j << (bit_in_byte - 1 - i);
@@ -19,66 +15,66 @@ bool get_bit(char &byte, int i) {
     return byte & (1 << (bit_in_byte - 1 - i));
 }
 
-void print_one_char(char &buf, int &count, std::ofstream &out, int &size_outfile, int j) {
+void print_one_char(char &buf, int &count,  HuffmanArchiver::Writer &out, int &size_outfile, int j) {
     set_bit(buf, count, j);
     count++;
     if (count == bit_in_byte) {
         count = 0;
-        out << buf;
+        out.write(buf);
         size_outfile++;
         buf = false;
     }
 }
 
-void print_residue(char &buf, int &count, std::ofstream &out, int &size_outfile) {
+void print_residue(char &buf, int &count, HuffmanArchiver::Writer &out, int &size_outfile) {
     if (count != 0) {
-        out << buf;
+        out.write(buf);
         size_outfile++;
     }
 }
 
 void HuffmanArchiver::encode() {
-    std::ifstream in(infile, std::ios::in | std::ios::binary);
-    if (!in) {
-        throw HuffException("file not open");
-    }
-    std::ofstream out(outfile, std::ios::out | std::ios::binary);
-    if (!out) {
-        throw HuffException("file not open");
-    }
+//    std::ifstream in(infile, std::ios::in | std::ios::binary);
+//    if (!in) {
+//        throw HuffException("file not open");
+//    }
+//    std::ofstream out(outfile, std::ios::out | std::ios::binary);
+//    if (!out) {
+//        throw HuffException("file not open");
+//    }
 
-    print_table(out);
+    print_table(writer);
     int count = 0;
     char buf = 0;
     char ch = 0;
     if (map.size() == 1) {
         auto it = map.begin();
         for (int i = 0; i < it->second; i++) {
-            print_one_char(buf, count, out, size_outfile, 0);
+            print_one_char(buf, count, writer, size_outfile, 0);
         }
-        print_residue(buf, count, out, size_outfile);
+        print_residue(buf, count, writer, size_outfile);
         return;
     }
-    if (!in.eof()) {
-        in.read(&ch, sizeof(char));
+    if (!reader.eof()) {
+        reader.read(&ch, sizeof(char));
     }
 
-    while (!in.eof()) {
-        if (in.rdstate())
+    while (!reader.eof()) {
+        if (reader.valid())
             throw HuffException("illegal input");
         std::vector<bool> x = table[ch];
         for (auto &&i : x) {
-            print_one_char(buf, count, out, size_outfile, i);
+            print_one_char(buf, count, writer, size_outfile, i);
         }
-        in.read(&ch, sizeof(char));
+        reader.read(&ch, sizeof(char));
     }
-    print_residue(buf, count, out, size_outfile);
+    print_residue(buf, count, writer, size_outfile);
 
-    in.close();
-    out.close();
+    // in.close();
+    // out.close();
 }
 
-void HuffmanArchiver::print_table(std::ofstream &out) {
+void HuffmanArchiver::print_table(Writer &out) {
     int size = map.size();
     out.write((char *) &size, sizeof(int));
     std::map<char, int>::iterator it;
@@ -92,7 +88,7 @@ int byte_from_bit(int bit) {
     return (bit + bit_in_byte - 1) / bit_in_byte;
 }
 
-void HuffmanArchiver::decode(const std::shared_ptr<TreeNode> &root, std::ifstream &in, std::ofstream &out) {
+void HuffmanArchiver::decode(const std::shared_ptr<TreeNode> &root, Reader &reader, Writer &out) {
     std::shared_ptr<TreeNode> node = root;
     int count = 0;
     char byte;
@@ -101,16 +97,16 @@ void HuffmanArchiver::decode(const std::shared_ptr<TreeNode> &root, std::ifstrea
     if (map.size() == 1) {
         auto it = map.begin();
         for (int i = 0; i < it->second; i++) {
-            out << it->first;
+            out.write(it->first);
         }
         size_infile = byte_from_bit(map.begin()->second);
         return;
     }
 
-    in.read(&byte, sizeof(char));
+    reader.read(&byte, sizeof(char));
     size_infile++;
-    while (!in.eof()) {
-        if (in.rdstate())
+    while (!reader.eof()) {
+        if (reader.valid())
             throw HuffException("illegal input");
         bool bit = get_bit(byte, count);
         if (bit) {
@@ -119,7 +115,7 @@ void HuffmanArchiver::decode(const std::shared_ptr<TreeNode> &root, std::ifstrea
             node = node->get_left();
         }
         if (node->get_left() == nullptr && node->get_right() == nullptr) {
-            out << node->get_ch();
+            out.write(node->get_ch());
             already_print++;
             if (already_print == size_outfile) {
                 break;
@@ -129,30 +125,30 @@ void HuffmanArchiver::decode(const std::shared_ptr<TreeNode> &root, std::ifstrea
         count++;
         if (count == bit_in_byte) {
             count = 0;
-            in.read(&byte, sizeof(char));
+            reader.read(&byte, sizeof(char));
             size_infile++;
         }
     }
 }
 
 void HuffmanArchiver::create_table() {
-    std::ifstream in(infile, std::ios::in | std::ios::binary);
-    if (!in) {
-        throw HuffException("file not open");
-    }
+//     std::ifstream in(infile, std::ios::in | std::ios::binary);
+//    if (!in) {
+//        throw HuffException("file not open");
+//    }
     size_infile = 0;
     char ch = ' ';
-    if (!in.eof()) {
-        in.read(&ch, sizeof(char));
+    if (!reader.eof()) {
+        reader.read(&ch, sizeof(char));
     }
-    while (!in.eof()) {
-        if (in.rdstate())
+    while (!reader.eof()) {
+        if (reader.valid())
             throw HuffException("illegal input");
         map[ch]++;
         size_infile++;
-        in.read(&ch, sizeof(char));
+        reader.read(&ch, sizeof(char));
     }
-    in.close();
+    // in.close();
 }
 
 void HuffmanArchiver::archiving() {
@@ -163,11 +159,11 @@ void HuffmanArchiver::archiving() {
     }
     size_table = map.size();
     if (map.empty()) {
-        std::ofstream out(outfile, std::ios::out | std::ios::binary);
-        if (!out) {
-            throw HuffException("file not open");
-        }
-        print_table(out);
+//        std::ofstream out(outfile, std::ios::out | std::ios::binary);
+//        if (!out) {
+//            throw HuffException("file not open");
+//        }
+        print_table(writer);
         return;
     }
     HuffTree tree;
@@ -207,15 +203,15 @@ void HuffmanArchiver::build_table(std::shared_ptr<TreeNode> root, std::vector<bo
 }
 
 void HuffmanArchiver::unzipping() {
-    std::ifstream in(infile, std::ios::in | std::ios::binary);
-    if (!in) {
-        throw HuffException("file not open");
-    }
-    std::ofstream out(outfile, std::ios::out | std::ios::binary);
-    if (!out) {
-        throw HuffException("file not open");
-    }
-    read_table(in);
+//    std::ifstream in(infile, std::ios::in | std::ios::binary);
+//    if (!in) {
+//        throw HuffException("file not open");
+//    }
+//    std::ofstream out(outfile, std::ios::out | std::ios::binary);
+//    if (!out) {
+//        throw HuffException("file not open");
+//    }
+    read_table(reader);
     size_table = map.size();
     if (map.empty()) {
         return;
@@ -228,20 +224,20 @@ void HuffmanArchiver::unzipping() {
         std::cout << e.get() << std::endl;
     }
     std::shared_ptr<TreeNode> root = tree.root();
-    decode(root, in, out);
-    out.close();
-    in.close();
+    decode(root, reader, writer);
+    // out.close();
+    // in.close();
 }
 
-void HuffmanArchiver::read_table(std::ifstream &in) {
+void HuffmanArchiver::read_table(Reader &in) {
     in.read((char *) &size_table, sizeof(int));
     for (int i = 0; i < size_table; i++) {
-        if (in.rdstate())
+        if (reader.valid())
             throw HuffException("illegal input");
         char ch;
-        in.read(&ch, sizeof(char));
+        reader.read(&ch, sizeof(char));
         int frequence;
-        in.read((char *) &frequence, sizeof(int));
+        reader.read((char *) &frequence, sizeof(int));
         map[ch] = frequence;
         size_outfile += frequence;
     }
