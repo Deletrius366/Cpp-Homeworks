@@ -39,11 +39,11 @@ void print_residue(char &buf, int &count, std::ofstream &out, int &size_outfile)
 
 void HuffmanArchiver::encode() {
     std::ifstream in(infile, std::ios::out | std::ios::binary);
-    if(!in) {
+    if (!in) {
         throw HuffException("file not open");
     }
     std::ofstream out(outfile, std::ios::out | std::ios::binary);
-    if(!out) {
+    if (!out) {
         throw HuffException("file not open");
     }
 
@@ -59,14 +59,15 @@ void HuffmanArchiver::encode() {
         print_residue(buf, count, out, size_outfile);
         return;
     }
-
     if (!in.eof()) {
         in.read(&ch, sizeof(char));
     }
 
     while (!in.eof()) {
+        if (in.rdstate())
+            throw HuffException("illegal input");
         std::vector<bool> x = table[ch];
-        for(auto && i : x) {
+        for (auto &&i : x) {
             print_one_char(buf, count, out, size_outfile, i);
         }
         in.read(&ch, sizeof(char));
@@ -79,11 +80,11 @@ void HuffmanArchiver::encode() {
 
 void HuffmanArchiver::print_table(std::ofstream &out) {
     int size = map.size();
-    out.write((char*)&size, sizeof(int));
+    out.write((char *) &size, sizeof(int));
     std::map<char, int>::iterator it;
     for (it = map.begin(); it != map.end(); it++) {
-        out.write((char*)&it->first, sizeof(char));
-        out.write((char*)&it->second, sizeof(int));
+        out.write((char *) &it->first, sizeof(char));
+        out.write((char *) &it->second, sizeof(int));
     }
 }
 
@@ -91,7 +92,7 @@ int byte_from_bit(int bit) {
     return (bit + bit_in_byte - 1) / bit_in_byte;
 }
 
-void HuffmanArchiver::decode(const std::shared_ptr<TreeNode>& root, std::ifstream &in, std::ofstream &out) {
+void HuffmanArchiver::decode(const std::shared_ptr<TreeNode> &root, std::ifstream &in, std::ofstream &out) {
     std::shared_ptr<TreeNode> node = root;
     int count = 0;
     char byte;
@@ -108,7 +109,9 @@ void HuffmanArchiver::decode(const std::shared_ptr<TreeNode>& root, std::ifstrea
 
     in.read(&byte, sizeof(char));
     size_infile++;
-    while(!in.eof()) {
+    while (!in.eof()) {
+        if (in.rdstate())
+            throw HuffException("illegal input");
         bool bit = get_bit(byte, count);
         if (bit) {
             node = node->get_right();
@@ -134,7 +137,7 @@ void HuffmanArchiver::decode(const std::shared_ptr<TreeNode>& root, std::ifstrea
 
 void HuffmanArchiver::create_table() {
     std::ifstream in(infile, std::ios::in | std::ios::binary);
-    if(!in) {
+    if (!in) {
         throw HuffException("file not open");
     }
     size_infile = 0;
@@ -143,6 +146,8 @@ void HuffmanArchiver::create_table() {
         in.read(&ch, sizeof(char));
     }
     while (!in.eof()) {
+        if (in.rdstate())
+            throw HuffException("illegal input");
         map[ch]++;
         size_infile++;
         in.read(&ch, sizeof(char));
@@ -159,7 +164,7 @@ void HuffmanArchiver::archiving() {
     size_table = map.size();
     if (map.empty()) {
         std::ofstream out(outfile, std::ios::out | std::ios::binary);
-        if(!out) {
+        if (!out) {
             throw HuffException("file not open");
         }
         print_table(out);
@@ -203,7 +208,7 @@ void HuffmanArchiver::build_table(std::shared_ptr<TreeNode> root, std::vector<bo
 
 void HuffmanArchiver::unzipping() {
     std::ifstream in(infile, std::ios::in | std::ios::binary);
-    if(!in) {
+    if (!in) {
         throw HuffException("file not open");
     }
     std::ofstream out(outfile, std::ios::out | std::ios::binary);
@@ -229,12 +234,14 @@ void HuffmanArchiver::unzipping() {
 }
 
 void HuffmanArchiver::read_table(std::ifstream &in) {
-    in.read((char*)&size_table, sizeof(int));
+    in.read((char *) &size_table, sizeof(int));
     for (int i = 0; i < size_table; i++) {
+        if (in.rdstate())
+            throw HuffException("illegal input");
         char ch;
         in.read(&ch, sizeof(char));
         int frequence;
-        in.read((char*)&frequence, sizeof(int));
+        in.read((char *) &frequence, sizeof(int));
         map[ch] = frequence;
         size_outfile += frequence;
     }
