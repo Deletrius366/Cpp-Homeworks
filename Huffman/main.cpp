@@ -8,8 +8,11 @@
 #include <string>
 #include <cstring>
 #include "HuffmanArchiver.h"
+#include "test.h"
 
 int main(int argc, char **argv) {
+    // unit_test();
+    // return 0;
     bool error = false;
     if (argc > 5) {
         const char* infile = nullptr;
