@@ -38,7 +38,7 @@ void print_residue(char &buf, int &count, std::ofstream &out, int &size_outfile)
 }
 
 void HuffmanArchiver::encode() {
-    std::ifstream in(infile, std::ios::out | std::ios::binary);
+    std::ifstream in(infile, std::ios::in | std::ios::binary);
     if (!in) {
         throw HuffException("file not open");
     }
