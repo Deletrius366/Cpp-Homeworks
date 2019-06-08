@@ -1,0 +1,3 @@
+-c -f C:\Users\User\CLionProjects\untitled1\input.txt -o C:\Users\User\CLionProjects\untitled1\output.txt
+
+-u -f C:\Users\User\CLionProjects\untitled1\output.txt -o C:\Users\User\CLionProjects\untitled1\input.txt
