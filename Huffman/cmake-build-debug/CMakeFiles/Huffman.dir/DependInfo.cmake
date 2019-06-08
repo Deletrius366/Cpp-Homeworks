@@ -4,9 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "C:/Users/User/CLionProjects/Huffman/HuffmanArchiver.cpp" "C:/Users/User/CLionProjects/Huffman/cmake-build-debug/CMakeFiles/untitled1.dir/HuffmanArchiver.cpp.obj"
-  "C:/Users/User/CLionProjects/Huffman/huffman.cpp" "C:/Users/User/CLionProjects/Huffman/cmake-build-debug/CMakeFiles/untitled1.dir/huffman.cpp.obj"
-  "C:/Users/User/CLionProjects/Huffman/main.cpp" "C:/Users/User/CLionProjects/Huffman/cmake-build-debug/CMakeFiles/untitled1.dir/main.cpp.obj"
+  "C:/Users/User/CLionProjects/Huffman/HuffmanArchiver.cpp" "C:/Users/User/CLionProjects/Huffman/cmake-build-debug/CMakeFiles/Huffman.dir/HuffmanArchiver.cpp.obj"
+  "C:/Users/User/CLionProjects/Huffman/huffman.cpp" "C:/Users/User/CLionProjects/Huffman/cmake-build-debug/CMakeFiles/Huffman.dir/huffman.cpp.obj"
+  "C:/Users/User/CLionProjects/Huffman/main.cpp" "C:/Users/User/CLionProjects/Huffman/cmake-build-debug/CMakeFiles/Huffman.dir/main.cpp.obj"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

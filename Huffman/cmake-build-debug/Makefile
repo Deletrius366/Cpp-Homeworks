@@ -47,10 +47,10 @@ RM = "D:\CLion 2018.2.5\bin\cmake\win\bin\cmake.exe" -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:\Users\User\CLionProjects\untitled1
+CMAKE_SOURCE_DIR = C:\Users\User\CLionProjects\Huffman
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:\Users\User\CLionProjects\untitled1\cmake-build-debug
+CMAKE_BINARY_DIR = C:\Users\User\CLionProjects\Huffman\cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -79,9 +79,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\User\CLionProjects\untitled1\cmake-build-debug\CMakeFiles C:\Users\User\CLionProjects\untitled1\cmake-build-debug\CMakeFiles\progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\User\CLionProjects\Huffman\cmake-build-debug\CMakeFiles C:\Users\User\CLionProjects\Huffman\cmake-build-debug\CMakeFiles\progress.marks
 	$(MAKE) -f CMakeFiles\Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\User\CLionProjects\untitled1\cmake-build-debug\CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\User\CLionProjects\Huffman\cmake-build-debug\CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -110,17 +110,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named untitled1
+# Target rules for targets named Huffman
 
 # Build rule for target.
-untitled1: cmake_check_build_system
-	$(MAKE) -f CMakeFiles\Makefile2 untitled1
-.PHONY : untitled1
+Huffman: cmake_check_build_system
+	$(MAKE) -f CMakeFiles\Makefile2 Huffman
+.PHONY : Huffman
 
 # fast build rule for target.
-untitled1/fast:
-	$(MAKE) -f CMakeFiles\untitled1.dir\build.make CMakeFiles/untitled1.dir/build
-.PHONY : untitled1/fast
+Huffman/fast:
+	$(MAKE) -f CMakeFiles\Huffman.dir\build.make CMakeFiles/Huffman.dir/build
+.PHONY : Huffman/fast
 
 HuffmanArchiver.obj: HuffmanArchiver.cpp.obj
 
@@ -128,7 +128,7 @@ HuffmanArchiver.obj: HuffmanArchiver.cpp.obj
 
 # target to build an object file
 HuffmanArchiver.cpp.obj:
-	$(MAKE) -f CMakeFiles\untitled1.dir\build.make CMakeFiles/untitled1.dir/HuffmanArchiver.cpp.obj
+	$(MAKE) -f CMakeFiles\Huffman.dir\build.make CMakeFiles/Huffman.dir/HuffmanArchiver.cpp.obj
 .PHONY : HuffmanArchiver.cpp.obj
 
 HuffmanArchiver.i: HuffmanArchiver.cpp.i
@@ -137,7 +137,7 @@ HuffmanArchiver.i: HuffmanArchiver.cpp.i
 
 # target to preprocess a source file
 HuffmanArchiver.cpp.i:
-	$(MAKE) -f CMakeFiles\untitled1.dir\build.make CMakeFiles/untitled1.dir/HuffmanArchiver.cpp.i
+	$(MAKE) -f CMakeFiles\Huffman.dir\build.make CMakeFiles/Huffman.dir/HuffmanArchiver.cpp.i
 .PHONY : HuffmanArchiver.cpp.i
 
 HuffmanArchiver.s: HuffmanArchiver.cpp.s
@@ -146,7 +146,7 @@ HuffmanArchiver.s: HuffmanArchiver.cpp.s
 
 # target to generate assembly for a file
 HuffmanArchiver.cpp.s:
-	$(MAKE) -f CMakeFiles\untitled1.dir\build.make CMakeFiles/untitled1.dir/HuffmanArchiver.cpp.s
+	$(MAKE) -f CMakeFiles\Huffman.dir\build.make CMakeFiles/Huffman.dir/HuffmanArchiver.cpp.s
 .PHONY : HuffmanArchiver.cpp.s
 
 huffman.obj: huffman.cpp.obj
@@ -155,7 +155,7 @@ huffman.obj: huffman.cpp.obj
 
 # target to build an object file
 huffman.cpp.obj:
-	$(MAKE) -f CMakeFiles\untitled1.dir\build.make CMakeFiles/untitled1.dir/huffman.cpp.obj
+	$(MAKE) -f CMakeFiles\Huffman.dir\build.make CMakeFiles/Huffman.dir/huffman.cpp.obj
 .PHONY : huffman.cpp.obj
 
 huffman.i: huffman.cpp.i
@@ -164,7 +164,7 @@ huffman.i: huffman.cpp.i
 
 # target to preprocess a source file
 huffman.cpp.i:
-	$(MAKE) -f CMakeFiles\untitled1.dir\build.make CMakeFiles/untitled1.dir/huffman.cpp.i
+	$(MAKE) -f CMakeFiles\Huffman.dir\build.make CMakeFiles/Huffman.dir/huffman.cpp.i
 .PHONY : huffman.cpp.i
 
 huffman.s: huffman.cpp.s
@@ -173,7 +173,7 @@ huffman.s: huffman.cpp.s
 
 # target to generate assembly for a file
 huffman.cpp.s:
-	$(MAKE) -f CMakeFiles\untitled1.dir\build.make CMakeFiles/untitled1.dir/huffman.cpp.s
+	$(MAKE) -f CMakeFiles\Huffman.dir\build.make CMakeFiles/Huffman.dir/huffman.cpp.s
 .PHONY : huffman.cpp.s
 
 main.obj: main.cpp.obj
@@ -182,7 +182,7 @@ main.obj: main.cpp.obj
 
 # target to build an object file
 main.cpp.obj:
-	$(MAKE) -f CMakeFiles\untitled1.dir\build.make CMakeFiles/untitled1.dir/main.cpp.obj
+	$(MAKE) -f CMakeFiles\Huffman.dir\build.make CMakeFiles/Huffman.dir/main.cpp.obj
 .PHONY : main.cpp.obj
 
 main.i: main.cpp.i
@@ -191,7 +191,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) -f CMakeFiles\untitled1.dir\build.make CMakeFiles/untitled1.dir/main.cpp.i
+	$(MAKE) -f CMakeFiles\Huffman.dir\build.make CMakeFiles/Huffman.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -200,7 +200,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) -f CMakeFiles\untitled1.dir\build.make CMakeFiles/untitled1.dir/main.cpp.s
+	$(MAKE) -f CMakeFiles\Huffman.dir\build.make CMakeFiles/Huffman.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 # Help Target
@@ -209,7 +209,7 @@ help:
 	@echo ... all (the default if no target is provided)
 	@echo ... clean
 	@echo ... depend
-	@echo ... untitled1
+	@echo ... Huffman
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... HuffmanArchiver.obj

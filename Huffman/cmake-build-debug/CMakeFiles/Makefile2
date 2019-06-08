@@ -58,45 +58,45 @@ RM = "D:\CLion 2018.2.5\bin\cmake\win\bin\cmake.exe" -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = C:\Users\User\CLionProjects\untitled1
+CMAKE_SOURCE_DIR = C:\Users\User\CLionProjects\Huffman
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = C:\Users\User\CLionProjects\untitled1\cmake-build-debug
+CMAKE_BINARY_DIR = C:\Users\User\CLionProjects\Huffman\cmake-build-debug
 
 #=============================================================================
-# Target rules for target CMakeFiles/untitled1.dir
+# Target rules for target CMakeFiles/Huffman.dir
 
 # All Build rule for target.
-CMakeFiles/untitled1.dir/all:
-	$(MAKE) -f CMakeFiles\untitled1.dir\build.make CMakeFiles/untitled1.dir/depend
-	$(MAKE) -f CMakeFiles\untitled1.dir\build.make CMakeFiles/untitled1.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=C:\Users\User\CLionProjects\untitled1\cmake-build-debug\CMakeFiles --progress-num=1,2,3,4 "Built target untitled1"
-.PHONY : CMakeFiles/untitled1.dir/all
+CMakeFiles/Huffman.dir/all:
+	$(MAKE) -f CMakeFiles\Huffman.dir\build.make CMakeFiles/Huffman.dir/depend
+	$(MAKE) -f CMakeFiles\Huffman.dir\build.make CMakeFiles/Huffman.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=C:\Users\User\CLionProjects\Huffman\cmake-build-debug\CMakeFiles --progress-num=1,2,3,4 "Built target Huffman"
+.PHONY : CMakeFiles/Huffman.dir/all
 
 # Include target in all.
-all: CMakeFiles/untitled1.dir/all
+all: CMakeFiles/Huffman.dir/all
 
 .PHONY : all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/untitled1.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\User\CLionProjects\untitled1\cmake-build-debug\CMakeFiles 4
-	$(MAKE) -f CMakeFiles\Makefile2 CMakeFiles/untitled1.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\User\CLionProjects\untitled1\cmake-build-debug\CMakeFiles 0
-.PHONY : CMakeFiles/untitled1.dir/rule
+CMakeFiles/Huffman.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\User\CLionProjects\Huffman\cmake-build-debug\CMakeFiles 4
+	$(MAKE) -f CMakeFiles\Makefile2 CMakeFiles/Huffman.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\User\CLionProjects\Huffman\cmake-build-debug\CMakeFiles 0
+.PHONY : CMakeFiles/Huffman.dir/rule
 
 # Convenience name for target.
-untitled1: CMakeFiles/untitled1.dir/rule
+Huffman: CMakeFiles/Huffman.dir/rule
 
-.PHONY : untitled1
-
-# clean rule for target.
-CMakeFiles/untitled1.dir/clean:
-	$(MAKE) -f CMakeFiles\untitled1.dir\build.make CMakeFiles/untitled1.dir/clean
-.PHONY : CMakeFiles/untitled1.dir/clean
+.PHONY : Huffman
 
 # clean rule for target.
-clean: CMakeFiles/untitled1.dir/clean
+CMakeFiles/Huffman.dir/clean:
+	$(MAKE) -f CMakeFiles\Huffman.dir\build.make CMakeFiles/Huffman.dir/clean
+.PHONY : CMakeFiles/Huffman.dir/clean
+
+# clean rule for target.
+clean: CMakeFiles/Huffman.dir/clean
 
 .PHONY : clean
 
