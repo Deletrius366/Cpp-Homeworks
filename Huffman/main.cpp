@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     if (argc > 5) {
         const char* infile = nullptr;
         const char* outfile = nullptr;
-        if (!strcmp(argv[2], "-f") || !strcmp(argv[2], "--file")) {
+        if (!strcmp(argv[2], "-i") || !strcmp(argv[2], "--input")) {
             infile = argv[3];
         } else {
             error = true;
@@ -28,7 +28,7 @@ int main(int argc, char **argv) {
             error = true;
         }
         HuffmanArchiver HuffArch(infile, outfile);
-        if (!strcmp(argv[1], "-c")) {
+        if (!strcmp(argv[1], "-a")) {
             try {
                 HuffArch.archiving();
             } catch (HuffException &e) {
@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
             HuffArch.get_stat();
         }
 
-        if ((strcmp(argv[1], "-c") != 0) && (strcmp(argv[1], "-u") != 0)) {
+        if ((strcmp(argv[1], "-a") != 0) && (strcmp(argv[1], "-u") != 0)) {
             error = true;
         }
 
