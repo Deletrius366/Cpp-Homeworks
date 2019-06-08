@@ -60,16 +60,16 @@ void HuffmanArchiver::encode() {
         return;
     }
 
-//    if (!in.eof()) {
-//        in.read(&ch, sizeof(char));
-//    }
+    if (!in.eof()) {
+        in.read(&ch, sizeof(char));
+    }
 
     while (!in.eof()) {
-        in.read(&ch, sizeof(char));
         std::vector<bool> x = table[ch];
         for(auto && i : x) {
             print_one_char(buf, count, out, size_outfile, i);
         }
+        in.read(&ch, sizeof(char));
     }
     print_residue(buf, count, out, size_outfile);
 
@@ -133,19 +133,19 @@ void HuffmanArchiver::decode(const std::shared_ptr<TreeNode>& root, std::ifstrea
 }
 
 void HuffmanArchiver::create_table() {
-    std::ifstream in(infile, std::ios::out | std::ios::binary);
+    std::ifstream in(infile, std::ios::in | std::ios::binary);
     if(!in) {
         throw HuffException("file not open");
     }
     size_infile = 0;
     char ch = ' ';
-//    if (!in.eof()) {
-//        in.read(&ch, sizeof(char));
-//    }
-    while (!in.eof()) {
+    if (!in.eof()) {
         in.read(&ch, sizeof(char));
+    }
+    while (!in.eof()) {
         map[ch]++;
         size_infile++;
+        in.read(&ch, sizeof(char));
     }
     in.close();
 }
@@ -197,7 +197,7 @@ void HuffmanArchiver::build_table(std::shared_ptr<TreeNode> root, std::vector<bo
     if (root->get_left() == nullptr && root->get_right() == nullptr) {
         table[root->get_ch()] = code;
     }
-    if (!code.empty()) 
+    if (!code.empty())
         code.pop_back();
 }
 
