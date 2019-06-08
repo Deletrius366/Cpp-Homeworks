@@ -197,8 +197,8 @@ void HuffmanArchiver::build_table(std::shared_ptr<TreeNode> root, std::vector<bo
     if (root->get_left() == nullptr && root->get_right() == nullptr) {
         table[root->get_ch()] = code;
     }
-
-    code.pop_back();
+    if (!code.empty()) 
+        code.pop_back();
 }
 
 void HuffmanArchiver::unzipping() {
