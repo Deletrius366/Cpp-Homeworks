@@ -9,7 +9,7 @@
 #include <cstring>
 #include "HuffmanArchiver.h"
 
-const int TEST_COUNT = 5;
+/*const int TEST_COUNT = 5;
 
 int random_test(const char *input, const char *output_encode, const char *output_decode, int num) {
     std::cout << "Random test #" << num << ":\n";
@@ -61,3 +61,4 @@ int unit_test() {
                 R"(C:\Users\User\CLionProjects\Huffman\output.txt)", 5);
     return 0;
 }
+*/
