@@ -1,7 +1,9 @@
 #include "HuffmanArchiver.h"
+#include "reader.h"
+
 const int bit_in_byte = 8;
 
-HuffmanArchiver::HuffmanArchiver(const char *infile_, const char *outfile_) : reader(infile_), writer(outfile_) {};
+// HuffmanArchiver::HuffmanArchiver() = default;;
 
 //HuffmanArchiver::HuffmanArchiver(std::map<char, int> &map_) {
 //    map = map_;
@@ -15,7 +17,7 @@ bool get_bit(char &byte, int i) {
     return byte & (1 << (bit_in_byte - 1 - i));
 }
 
-void print_one_char(char &buf, int &count,  HuffmanArchiver::Writer &out, int &size_outfile, int j) {
+void print_one_char(char &buf, int &count,  Writer &out, int &size_outfile, int j) {
     set_bit(buf, count, j);
     count++;
     if (count == bit_in_byte) {
@@ -26,23 +28,25 @@ void print_one_char(char &buf, int &count,  HuffmanArchiver::Writer &out, int &s
     }
 }
 
-void print_residue(char &buf, int &count, HuffmanArchiver::Writer &out, int &size_outfile) {
+void print_residue(char &buf, int &count, Writer &out, int &size_outfile) {
     if (count != 0) {
         out.write(buf);
         size_outfile++;
     }
 }
 
-void HuffmanArchiver::encode() {
+void HuffmanArchiver::encode(Reader& reader, Writer& writer) {
 //    std::ifstream in(infile, std::ios::in | std::ios::binary);
 //    if (!in) {
 //        throw HuffException("file not open");
 //    }
-//    std::ofstream out(outfile, std::ios::out | std::ios::binary);
+//    std::ofstream out(outfile, std::iRos::out | std::ios::binary);
 //    if (!out) {
 //        throw HuffException("file not open");
 //    }
-
+    // FileReader reader(infile);
+    // FileWriter writer(outfile);
+    reader.reopen();
     print_table(writer);
     int count = 0;
     char buf = 0;
@@ -131,7 +135,7 @@ void HuffmanArchiver::decode(const std::shared_ptr<TreeNode> &root, Reader &read
     }
 }
 
-void HuffmanArchiver::create_table() {
+void HuffmanArchiver::create_table(Reader& reader, Writer& writer) {
 //     std::ifstream in(infile, std::ios::in | std::ios::binary);
 //    if (!in) {
 //        throw HuffException("file not open");
@@ -151,9 +155,9 @@ void HuffmanArchiver::create_table() {
     // in.close();
 }
 
-void HuffmanArchiver::archiving() {
+void HuffmanArchiver::archiving(Reader& reader, Writer& writer) {
     try {
-        create_table();
+        create_table(reader, writer);
     } catch (HuffException &e) {
         std::cout << e.get() << std::endl;
     }
@@ -177,7 +181,7 @@ void HuffmanArchiver::archiving() {
     std::vector<bool> code;
     build_table(root, code);
     try {
-        encode();
+        encode(reader, writer);
     } catch (HuffException &e) {
         std::cout << e.get() << std::endl;
     }
@@ -202,7 +206,7 @@ void HuffmanArchiver::build_table(std::shared_ptr<TreeNode> root, std::vector<bo
         code.pop_back();
 }
 
-void HuffmanArchiver::unzipping() {
+void HuffmanArchiver::unzipping(Reader& reader, Writer& writer) {
 //    std::ifstream in(infile, std::ios::in | std::ios::binary);
 //    if (!in) {
 //        throw HuffException("file not open");
@@ -229,8 +233,8 @@ void HuffmanArchiver::unzipping() {
     // in.close();
 }
 
-void HuffmanArchiver::read_table(Reader &in) {
-    in.read((char *) &size_table, sizeof(int));
+void HuffmanArchiver::read_table(Reader & reader) {
+    reader.read((char *) &size_table, sizeof(int));
     for (int i = 0; i < size_table; i++) {
         if (reader.valid())
             throw HuffException("illegal input");

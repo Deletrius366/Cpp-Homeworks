@@ -3,4 +3,4 @@ project(Huffman)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Huffman main.cpp test.cpp huffman.h huffman.cpp HuffmanArchiver.h HuffmanArchiver.cpp)
+add_executable(Huffman main.cpp test.cpp huffman.h huffman.cpp HuffmanArchiver.h HuffmanArchiver.cpp reader.h)
